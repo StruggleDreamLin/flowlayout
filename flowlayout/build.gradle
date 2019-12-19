@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+ext {
+    libraryPackaging = 'aar'                                            //上传aar形式的打包文件
+
+    // jcenter
+    bintrayRepo = "flowlayout"                                             // 你上传的位于bintray中的Repository名称，如果没有创建会有一个叫maven的
+    name = 'flowlayout'                                                // 必须和library module的名字相同
+    libraryDesc = 'A Android FlowLayout'
+    publishedGroupId = 'com.dreamlin.flowlayout'                // 填写groupId， 一般是包名，比如：com.android.support
+    versionName = '1.0.0'                                               // 版本号，比如：22.2.1
+    websiteUrl = 'https://github.com/StruggleDreamLin/flowlayout'              // 可以填写github上的库地址.
+    issueTrackerUrl = 'https://github.com/StruggleDreamLin/flowlayout/issues'  // 可以填写github库的issue地址.
+    vcsUrl = 'https://github.com/StruggleDreamLin/flowlayout.git'              // 可以填写github上库的地址.
+    licenseName = "MIT"
+    libraryVersionDesc = ''
+
+    // maven
+    artifact = 'flowlayout'                                            // 必须和library module的名字相同
+    libraryName = 'flowlayout'
+    developerId = 'dreamlin'
+    developerName = 'dreamlin'
+    developerEmail = 'strugglebydreamlin@gmail.com'
+    licenseName = 'MIT License'
+    licenseUrl = 'https://www.mit-license.org/'
+
+}
+apply from: 'android-maven-install.gradle'
+apply from: 'android-tasks.gradle'
+apply from: 'bintray.gradle'
