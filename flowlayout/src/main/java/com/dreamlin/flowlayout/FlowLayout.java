@@ -378,10 +378,10 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
     /**
      * 设置默认字体大小
      *
-     * @param mFontSize 单位sp
+     * @param fontSize 单位sp
      */
-    public void setmFontSize(int mFontSize) {
-        this.mFontSize = mFontSize;
+    public void setmFontSize(int fontSize) {
+        this.mFontSize = fontSize;
     }
 
     /**

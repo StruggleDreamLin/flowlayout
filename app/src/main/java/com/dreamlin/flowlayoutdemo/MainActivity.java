@@ -5,15 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.dreamlin.flowlayout.FlowItem;
 import com.dreamlin.flowlayout.FlowLayout;
+import com.dreamlin.flowlayout.FlowListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    final String TAG = AppCompatActivity.class.getName();
 
     FlowLayout flowMix;
     FlowLayout flowSingle;
@@ -27,24 +31,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        flowMix = findViewById(R.id.flow_mix);
-        flowSingle = findViewById(R.id.flow_single);
-        flowMulti = findViewById(R.id.flow_multi);
 
+        flowMix = findViewById(R.id.flow_mix);
         flowMix.addChild("混合");
         flowMix.addChild("会怎么样呢");
 
+        flowSingle = findViewById(R.id.flow_single);
         flowSingle.addChild("谁说爱上一个不回家的人");
         flowSingle.addChild("唯一结局就是无止境的等");
         flowSingle.addChild("Oh ...");
-        flowSingle.addChild("不可能");
+        flowSingle.addChild(new FlowItem().setTitle("不可能"));
         flowSingle.addChild("难道真没有别的可能");
         flowSingle.addChild("这怎么成");
         flowSingle.addChild("我不要");
         flowSingle.addChild("安稳");
         flowSingle.addChild("我不要");
         flowSingle.addChild("牺牲");
+        flowSingle.setItemStateListener(new FlowListener() {
+            @Override
+            public void onItemSelected(FlowItem flowItem) {
+                Log.i(TAG, String.format("onItem(%d) selected:%s", flowItem.getPosition(), flowItem.getTitle()));
+            }
 
+            @Override
+            public void onItemUnSelected(FlowItem flowItem) {
+                Log.i(TAG, String.format("onItem(%d) unSelected:%s", flowItem.getPosition(), flowItem.getTitle()));
+            }
+        });
+
+        flowMulti = findViewById(R.id.flow_multi);
         List<FlowItem> flowItems = new ArrayList<>();
         flowItems.add(new FlowItem().setTitle("凝不成")
                 .setPadding(dp2px(20), dp2px(8), dp2px(20), dp2px(8)));
