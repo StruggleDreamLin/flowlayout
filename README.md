@@ -177,8 +177,8 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
     flowSingle.addItem("谁说爱上一个不回家的人");
     flowSingle.addItem("唯一结局就是无止境的等");
     flowSingle.addItem("Oh ...");
-	flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
-	flowSingle.addItems("我不要", "牺牲");
+    flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
+    flowSingle.addItems("我不要", "牺牲");
 ```
 
 或者通过FlowItem添加
@@ -256,7 +256,5 @@ app:defDrawable="@drawable/flow_item_selector"
 如果我们**不在子Item中设置Drawable**，子Item就会使用该默认drawable
 
 如果在子Item中设置了Drawable，则使用设置的;**其他属性也是同理，优先子Item的设置**
-
-
 
 如果觉得好用就点个Star吧，感谢~
