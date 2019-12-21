@@ -1,4 +1,4 @@
-# `flowlayout
+# flowlayout
 a flexible android flowlayout
 
 ## 效果
@@ -10,7 +10,7 @@ a flexible android flowlayout
 ## 引用
 
 ```java
-implementation 'com.dreamlin.flowlayout:flowlayout:1.0.0'
+implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
 ```
 
 
