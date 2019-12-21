@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     FlowLayout flowMix;
     FlowLayout flowSingle;
     FlowLayout flowMulti;
+    FlowLayout flowNotSelect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,20 +34,30 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
 
         flowMix = findViewById(R.id.flow_mix);
-        flowMix.addChild("混合");
-        flowMix.addChild("会怎么样呢");
+        flowMix.addItem("混合");
+        flowMix.addItem("会怎么样呢");
+        flowMix.setItemStateListener(new FlowListener() {
+            @Override
+            public void onItemSelected(FlowItem flowItem) {
+                Log.i(TAG, String.format("onItem(%d) selected:%s", flowItem.getPosition(), flowItem.getTitle()));
+            }
+
+            @Override
+            public void onItemUnSelected(FlowItem flowItem) {
+                Log.i(TAG, String.format("onItem(%d) unSelected:%s", flowItem.getPosition(), flowItem.getTitle()));
+            }
+        });
 
         flowSingle = findViewById(R.id.flow_single);
-        flowSingle.addChild("谁说爱上一个不回家的人");
-        flowSingle.addChild("唯一结局就是无止境的等");
-        flowSingle.addChild("Oh ...");
-        flowSingle.addChild(new FlowItem().setTitle("不可能"));
-        flowSingle.addChild("难道真没有别的可能");
-        flowSingle.addChild("这怎么成");
-        flowSingle.addChild("我不要");
-        flowSingle.addChild("安稳");
-        flowSingle.addChild("我不要");
-        flowSingle.addChild("牺牲");
+        flowSingle.addItem("谁说爱上一个不回家的人");
+        flowSingle.addItem("唯一结局就是无止境的等");
+        flowSingle.addItem("Oh ...");
+        flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
+        flowSingle.addItem(new FlowItem().setTitle("不可能"));
+        flowSingle.addItem("我不要");
+        flowSingle.addItem("安稳");
+        flowSingle.addItems("我不要", "牺牲");
+
         flowSingle.setItemStateListener(new FlowListener() {
             @Override
             public void onItemSelected(FlowItem flowItem) {
@@ -77,8 +88,12 @@ public class MainActivity extends AppCompatActivity {
         flowItems.add(new FlowItem().setTitle("仰着感触 窝着领悟"));
         flowItems.add(new FlowItem().setTitle("我们都是 被熔铸的动物"));
         flowItems.add(new FlowItem().setTitle("注定怀抱砂土"));
-        flowItems.add(new FlowItem().setTitle("不必痴迷 传说的甘露"));
-        flowMulti.addChilds(flowItems);
+        flowMulti.addItems(flowItems);
+
+        flowNotSelect = findViewById(R.id.flow_not_select);
+        flowNotSelect.addItems("闻说你时常在下午", "来这里寄信件", "逢礼拜留连艺术展",
+                "逢礼拜留连艺术展", "还是未间断", "何以我来回巡逻遍", "仍然和你擦肩",
+                "还仍然在各自宇宙", "错过了春天");
     }
 
     static int dp2px(int dp) {

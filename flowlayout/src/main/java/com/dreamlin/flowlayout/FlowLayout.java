@@ -23,7 +23,6 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
 
     private boolean enableSelected = true;
     private boolean multiSelected = false;
-    private boolean isFirstAppend = true;
     private int lastSelectedIndex = -1;
     private int currentSelectedIndex = -1;
 
@@ -79,7 +78,7 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         int childCount = getChildCount();
         int selfWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         int selfWidthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -245,11 +244,68 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
      *
      * @param title 子Item标题
      */
-    public void addChild(String title) {
-        addChild(new FlowItem().setTitle(title));
+    public void addItem(String title) {
+        addItemAt(flowItems.size(), new FlowItem().setTitle(title), true);
     }
 
-    public void addChild(FlowItem flowItem) {
+    public void addItemAt(int index, String title) {
+        if (index < 0 || index > flowItems.size())
+            throw new IndexOutOfBoundsException(String.format("非法的插入位置{%d}", index));
+        addItemAt(index, new FlowItem().setTitle(title));
+    }
+
+    /**
+     * 添加Item
+     *
+     * @param flowItem
+     */
+    public void addItem(FlowItem flowItem) {
+        addItemAt(flowItems.size(), flowItem, true);
+    }
+
+    /**
+     * 添加Items
+     *
+     * @param titles
+     */
+    public void addItems(String... titles) {
+        for (int i = 0; i < titles.length; i++) {
+            addItem(titles[i]);
+        }
+    }
+
+    public void addItemsAt(int index, String... titles) {
+        if (index < 0 || index > flowItems.size())
+            throw new IndexOutOfBoundsException(String.format("非法的插入位置{%d}", index));
+        for (int i = 0; i < titles.length; i++) {
+            addItemAt(index + i, titles[i]);
+        }
+    }
+
+    /**
+     * 添加多个子Item
+     *
+     * @param items
+     */
+    public void addItems(List<FlowItem> items) {
+        for (int i = 0; i < items.size(); i++) {
+            addItemAt(this.flowItems.size(), items.get(i), true);
+        }
+    }
+
+    public void addItemsAt(int index, List<FlowItem> items) {
+        if (index < 0 || index > flowItems.size())
+            throw new IndexOutOfBoundsException(String.format("非法的插入位置{%d}", index));
+        for (int i = 0; i < items.size(); i++) {
+            addItemAt(index + i, items.get(i));
+        }
+    }
+
+    public void addItemAt(int index, FlowItem flowItem) {
+        addItemAt(index, flowItem, false);
+    }
+
+    private void addItemAt(int index, FlowItem flowItem, boolean isAppend) {
         //正常情况下，getChildCount == flowItems.size()
         if (getChildCount() > flowItems.size()) { //处理XML添加的Child
             for (int i = 0; i < getChildCount(); i++) {
@@ -270,18 +326,21 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
                         ((TextView) childAt).getText().toString() : "");
                 xmlFlowItem.setPosition(i);
                 flowItems.add(xmlFlowItem);
+                if (isAppend)
+                    index = flowItems.size();
             }
+
         }
         TextView textView = new TextView(getContext());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams layoutParams = new LayoutParams(flowItem.getWidth(), flowItem.getHeight());
         textView.setLayoutParams(layoutParams);
         if (flowItem.getDrawable() != R.drawable.item_selector) {
             textView.setBackgroundResource(flowItem.getDrawable());
         } else {
             textView.setBackgroundResource(mDefDrawable);
         }
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mFontSize);
-        textView.setTextColor(mFontColor);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, flowItem.getFontSize() > 0 ? flowItem.getFontSize() : mFontSize);
+        textView.setTextColor(flowItem.getFontColor() > 0 ? flowItem.getFontColor() : mFontColor);
         textView.setText(flowItem.getTitle());
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(flowItem.getPaddingLeft() >= 0 ? flowItem.getPaddingLeft() : mChildPaddingLeft,
@@ -293,8 +352,10 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
         flowItem.setPosition(insertPosition);
         if (enableSelected)
             textView.setOnClickListener(this);
-        addView(textView);
-        flowItems.add(flowItem);
+        if (index < 0 || index > flowItems.size())
+            throw new IndexOutOfBoundsException(String.format("非法的插入位置{%d}", index));
+        addView(textView, index);
+        flowItems.add(index, flowItem);
         //View默认的select属性是false
         if (flowItem.isSelect()) {
             //这里修改为false，触发click后会置true
@@ -304,14 +365,120 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
     }
 
     /**
-     * 添加多个子Item
+     * 修改Item标题
      *
-     * @param flowItems
+     * @param title
+     * @param newTitle
      */
-    public void addChilds(List<FlowItem> flowItems) {
+    public void updateItemTitle(String title, String newTitle) {
         for (int i = 0; i < flowItems.size(); i++) {
-            addChild(flowItems.get(i));
+            if (title.equals(flowItems.get(i).getTitle())) {
+                flowItems.get(i).setTitle(newTitle);
+                updateItemTitle(i, newTitle);
+            }
         }
+    }
+
+    public void updateItemTitle(int index, String newTitle) {
+        if (index > 0 && index < flowItems.size()) {
+            flowItems.get(index).setTitle(newTitle);
+            View childAt = getChildAt(index);
+            if (childAt instanceof TextView) {
+                ((TextView) childAt).setText(newTitle);
+            }
+        }
+    }
+
+    /**
+     * 根据title更新Item信息
+     *
+     * @param title
+     * @param newItem
+     */
+    public void updateItem(String title, FlowItem newItem) {
+        for (int i = 0; i < flowItems.size(); i++) {
+            if (title.equals(flowItems.get(i).getTitle())) {
+                updateItemAt(i, newItem);
+            }
+        }
+    }
+
+    /**
+     * 更新Item信息
+     *
+     * @param flowItem
+     */
+    public void updateItem(FlowItem flowItem) {
+        for (int i = 0; i < flowItems.size(); i++) {
+            if (flowItem.getTitle().equals(flowItems.get(i).getTitle())) {
+                updateItemAt(i, flowItem);
+            }
+        }
+    }
+
+    /**
+     * 更新指定位置的Item信息
+     *
+     * @param index    item所在index
+     * @param flowItem 要替换的item
+     */
+    public void updateItemAt(int index, FlowItem flowItem) {
+        if (index > 0 && index < flowItems.size()) {
+            flowItems.set(index, flowItem);
+            View childAt = getChildAt(index);
+            if (childAt instanceof TextView) {
+                TextView textView = (TextView) childAt;
+                if (flowItem.getDrawable() != R.drawable.item_selector) {
+                    textView.setBackgroundResource(flowItem.getDrawable());
+                } else {
+                    textView.setBackgroundResource(mDefDrawable);
+                }
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, flowItem.getFontSize() > 0 ? sp2px(flowItem.getFontSize()) : mFontSize);
+                textView.setTextColor(flowItem.getFontColor() > 0 ? flowItem.getFontColor() : mFontColor);
+                textView.setGravity(Gravity.CENTER);
+                textView.setPadding(flowItem.getPaddingLeft() >= 0 ? flowItem.getPaddingLeft() : mChildPaddingLeft,
+                        flowItem.getPaddingTop() >= 0 ? flowItem.getPaddingTop() : mChildPaddingTop,
+                        flowItem.getPaddingRight() >= 0 ? flowItem.getPaddingRight() : mChildPaddingRight,
+                        flowItem.getPaddingBottom() >= 0 ? flowItem.getPaddingBottom() : mChildPaddingBottom);
+                textView.setText(flowItem.getTitle());
+            }
+        }
+    }
+
+    /**
+     * 移除Item
+     *
+     * @param title
+     */
+    public void removeItem(String title) {
+        for (int i = 0; i < flowItems.size(); i++) {
+            if (title.equals(flowItems.get(i).getTitle()))
+                removeItemAt(i);
+        }
+    }
+
+    /**
+     * 移除Item
+     *
+     * @param flowItem
+     */
+    public void removeItem(FlowItem flowItem) {
+        for (int i = 0; i < flowItems.size(); i++) {
+            if (flowItem.getTitle().equals(flowItems.get(i).getTitle()))
+                removeItemAt(i);
+        }
+    }
+
+    /**
+     * 移除指定位置的Item
+     *
+     * @param index
+     */
+    public void removeItemAt(int index) {
+        if (index < 0 || index > flowItems.size())
+            throw new IndexOutOfBoundsException(String.format("非法的移除位置{%d}", index));
+        flowItems.remove(index);
+        super.removeViewAt(index);
     }
 
     @Override
@@ -380,7 +547,7 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
      *
      * @param fontSize 单位sp
      */
-    public void setmFontSize(int fontSize) {
+    public void setFontSize(int fontSize) {
         this.mFontSize = fontSize;
     }
 
@@ -423,6 +590,13 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
             }
         }
         return selects;
+    }
+
+    /**
+     * @return 返回当前item数量
+     */
+    public int getItemCount() {
+        return flowItems.size();
     }
 
     static int dp2px(int dp) {

@@ -1,4 +1,4 @@
-# flowlayout
+# `flowlayout
 a flexible android flowlayout
 
 ## 效果
@@ -35,21 +35,34 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.0'
 
 ## 方法
 
-| 方法                                          | 说明                |
-| --------------------------------------------- | ------------------- |
-| `setEnableSelected(boolean enableSelected)`   | 设置是否开启选择    |
-| `setMultiSelected(boolean multiSelected)`     | 设置是否多选        |
-| `setmFontSize(int fontSize)`                  | 设置字体大小        |
-| `setFontColor(int fontColor)`                 | 设置字体颜色        |
-| `setColumnSpacing(int columnSpacing)`         | 设置列间距          |
-| `setLineSpacing(int lineSpacing)`             | 设置行间距          |
-| `setItemStateListener(FlowListener listener)` | 设置Item监听        |
-| `public FlowItem getSelect()`                 | 获取当前选择的item  |
-| `public List<FlowItem> getSelects()`          | 获取当前选中的items |
-| `addChild(FlowItem flowItem) `                | 添加item            |
-| `addChild(String title)`                      | 添加item            |
-| `addChilds(List<FlowItem> flowItems)`         | 添加items           |
-
+| 方法                                             | 说明                  |
+| --------------------------------------------- | --------------------- |
+| `setEnableSelected(boolean enableSelected)`      | 设置是否开启选择      |
+| `setMultiSelected(boolean multiSelected)`        | 设置是否多选          |
+| `setFontSize(int fontSize)`                      | 设置字体大小          |
+| `setFontColor(int fontColor)`                    | 设置字体颜色          |
+| `setColumnSpacing(int columnSpacing)`            | 设置列间距            |
+| `setLineSpacing(int lineSpacing)`                | 设置行间距            |
+| `setItemStateListener(FlowListener listener)`    | 设置Item监听          |
+| `public FlowItem getSelect()`                    | 获取当前选择的item    |
+| `public List<FlowItem> getSelects()`             | 获取当前选中的items   |
+| `public int getItemCount()`                      | 获取当前Item数量      |
+| `addItem(FlowItem flowItem) `                    | 添加item              |
+| `addItem(String title)`                          | 添加item              |
+| `addItems(List<FlowItem> flowItems)`             | 添加items          |
+| `addItems(String... titles)`                     | 添加items          |
+| `addItemAt(int index, FlowItem flowItem)`        | 在指定位置插入Item    |
+| `addItemsAt(int index, String... titles)`        | 在指定位置插入Item    |
+| `addItemsAt(int index, List<FlowItem> items)`    | 在指定位置插入Items   |
+| `addItemsAt(int index, String... titles)`        | 在指定位置插入Items   |
+| `updateItemTitle(String title, String newTitle)` | 更新Item标题          |
+| `updateItemTitle(int index, String newTitle)`    | 更新指定位置Item标题  |
+| `updateItem(String title, FlowItem newItem) `    | 根据title更新Item信息 |
+| `updateItem(FlowItem flowItem)`                  | 更新Item信息          |
+| `updateItemAt(int index, FlowItem flowItem)`     | 更新指定位置Item信息  |
+| `removeItem(String title)`                       | 根据标题移除Item      |
+| `removeItem(FlowItem flowItem)`                  | 移除指定Item          |
+| `removeItemAt(int index)`                        | 移除指定位置的Item    |
 
 
 ## 使用
@@ -94,8 +107,8 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.0'
 ```java
     //代码中混合添加
     flowMix = findViewById(R.id.flow_mix);
-    flowMix.addChild("混合");
-    flowMix.addChild("会怎么样呢");
+    flowMix.addItem("混合");
+    flowMix.addItem("会怎么样呢");
 ```
 
 ### 单选
@@ -141,30 +154,37 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.0'
 
 子Item既可以在xml里添加，也可以在代码里添加
 
+**FlowItem**
+
+| 属性          | 说明                                                  |
+| ------------- | ----------------------------------------------------- |
+| title         | 标题                                                  |
+| select        | 是否选中，默认false                                   |
+| position      | 在FlowLayout里的位置，该属性不可写，只有get属性       |
+| drawable      | background                                            |
+| fontColor     | 字体颜色，不设置默认为FlowLayout中的mFontColor        |
+| fontSize      | 字体大小，单位dp，不设置默认为FlowLayout中的mFontSize |
+| width         | 宽度，单位dp，默认为LayoutParams.WRAP_CONTENT         |
+| height        | 高度，单位dp，默认为LayoutParams.WRAP_CONTENT         |
+| paddingLeft   | 见名知意...                                           |
+| paddingTop    | 见名知意...                                           |
+| paddingRight  | 见名知意...                                           |
+| paddingBottom | 见名知意...                                           |
+
 #### 单个添加
 
 ```java
-    flowSingle.addChild("谁说爱上一个不回家的人");
-    flowSingle.addChild("唯一结局就是无止境的等");
-    flowSingle.addChild("Oh ...");
+    flowSingle.addItem("谁说爱上一个不回家的人");
+    flowSingle.addItem("唯一结局就是无止境的等");
+    flowSingle.addItem("Oh ...");
+	flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
+	flowSingle.addItems("我不要", "牺牲");
 ```
 
 或者通过FlowItem添加
 
-**FlowItem**
-
-| 属性          | 说明                |
-| ------------- | ------------------- |
-| title         | 标题                |
-| select        | 是否选中，默认false |
-| drawable      | background          |
-| paddingLeft   | 见名知意...         |
-| paddingTop    | 见名知意...         |
-| paddingRight  | 见名知意...         |
-| paddingBottom | 见名知意...         |
-
 ```java
-flowSingle.addChild(new FlowItem().setTitle("不可能")
+flowSingle.addItem(new FlowItem().setTitle("不可能")
         .setDrawable(R.drawable.flow_item_selector) 			//可选
         .setSelect(true)										//可选
         .setPadding(dp2px(20), dp2px(8), dp2px(20), dp2px(8)));	//可选
@@ -194,7 +214,7 @@ flowItems.add(new FlowItem().setTitle("仰着感触 窝着领悟"));
 flowItems.add(new FlowItem().setTitle("我们都是 被熔铸的动物"));
 flowItems.add(new FlowItem().setTitle("注定怀抱砂土"));
 flowItems.add(new FlowItem().setTitle("不必痴迷 传说的甘露"));
-flowMulti.addChilds(flowItems);
+flowMulti.addItems(flowItems);
 ```
 
 

@@ -1,5 +1,8 @@
 package com.dreamlin.flowlayout;
 
+import android.view.ViewGroup;
+
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 
 public class FlowItem {
@@ -14,6 +17,11 @@ public class FlowItem {
     //可选
     private @DrawableRes
     int drawable = R.drawable.item_selector;
+    private @ColorInt
+    int fontColor;
+    private int fontSize;
+    private int width = ViewGroup.LayoutParams.WRAP_CONTENT; //单位 dp
+    private int height = ViewGroup.LayoutParams.WRAP_CONTENT; //单位dp
     private int paddingLeft = -1;
     private int paddingTop = -1;
     private int paddingRight = -1;
@@ -51,6 +59,42 @@ public class FlowItem {
 
     public FlowItem setDrawable(int drawable) {
         this.drawable = drawable;
+        return this;
+    }
+
+    public int getFontColor() {
+        return fontColor;
+    }
+
+    public FlowItem setFontColor(int fontColor) {
+        this.fontColor = fontColor;
+        return this;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public FlowItem setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+        return this;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public FlowItem setWidth(int width) {
+        this.width = width;
+        return this;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public FlowItem setHeight(int height) {
+        this.height = height;
         return this;
     }
 
