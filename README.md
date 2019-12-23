@@ -260,4 +260,3 @@ app:defDrawable="@drawable/flow_item_selector"
 如果在子Item中设置了Drawable，则使用设置的;**其他属性也是同理，优先子Item的设置**
 
 如果觉得好用就点个Star吧，感谢~
-
