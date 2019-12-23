@@ -339,8 +339,9 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
         } else {
             textView.setBackgroundResource(mDefDrawable);
         }
+        textView.setEnabled(flowItem.isEnable());
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, flowItem.getFontSize() > 0 ? flowItem.getFontSize() : mFontSize);
-        textView.setTextColor(flowItem.getFontColor() > 0 ? flowItem.getFontColor() : mFontColor);
+        textView.setTextColor(flowItem.getFontColor() != 0 ? flowItem.getFontColor() : mFontColor);
         textView.setText(flowItem.getTitle());
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(flowItem.getPaddingLeft() >= 0 ? flowItem.getPaddingLeft() : mChildPaddingLeft,
@@ -433,14 +434,20 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
                 } else {
                     textView.setBackgroundResource(mDefDrawable);
                 }
+                textView.setEnabled(flowItem.isEnable());
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, flowItem.getFontSize() > 0 ? sp2px(flowItem.getFontSize()) : mFontSize);
-                textView.setTextColor(flowItem.getFontColor() > 0 ? flowItem.getFontColor() : mFontColor);
+                textView.setTextColor(flowItem.getFontColor() != 0 ? flowItem.getFontColor() : mFontColor);
                 textView.setGravity(Gravity.CENTER);
                 textView.setPadding(flowItem.getPaddingLeft() >= 0 ? flowItem.getPaddingLeft() : mChildPaddingLeft,
                         flowItem.getPaddingTop() >= 0 ? flowItem.getPaddingTop() : mChildPaddingTop,
                         flowItem.getPaddingRight() >= 0 ? flowItem.getPaddingRight() : mChildPaddingRight,
                         flowItem.getPaddingBottom() >= 0 ? flowItem.getPaddingBottom() : mChildPaddingBottom);
                 textView.setText(flowItem.getTitle());
+                if (flowItem.isSelect()) {
+                    //这里修改为false，触发click后会置true
+                    flowItem.setSelect(false);
+                    textView.callOnClick();
+                }
             }
         }
     }
@@ -567,6 +574,15 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
      */
     public void setItemStateListener(FlowListener listener) {
         this.mListener = listener;
+    }
+
+    /**
+     * 获取所有子Item数据
+     *
+     * @return
+     */
+    public List<FlowItem> getFlowItems() {
+        return flowItems;
     }
 
     /**

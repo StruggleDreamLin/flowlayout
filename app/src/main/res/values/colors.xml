@@ -8,5 +8,6 @@
 
     <color name="selected">#BF3EFF</color>
     <color name="unselected">#CCCCCC</color>
+    <color name="disabled">#DEDEDE</color>
 
 </resources>

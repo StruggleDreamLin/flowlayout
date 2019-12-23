@@ -44,13 +44,14 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
 | `setColumnSpacing(int columnSpacing)`            | 设置列间距            |
 | `setLineSpacing(int lineSpacing)`                | 设置行间距            |
 | `setItemStateListener(FlowListener listener)`    | 设置Item监听          |
-| `public FlowItem getSelect()`                    | 获取当前选择的item    |
-| `public List<FlowItem> getSelects()`             | 获取当前选中的items   |
+| `public List<FlowItem> getFlowItems()` | 获取所有子Item数据 |
+| `public FlowItem getSelect()`                    | 获取当前选择的Item |
+| `public List<FlowItem> getSelects()`             | 获取当前选中的Items |
 | `public int getItemCount()`                      | 获取当前Item数量      |
-| `addItem(FlowItem flowItem) `                    | 添加item              |
-| `addItem(String title)`                          | 添加item              |
-| `addItems(List<FlowItem> flowItems)`             | 添加items          |
-| `addItems(String... titles)`                     | 添加items          |
+| `addItem(FlowItem flowItem) `                    | 添加Item          |
+| `addItem(String title)`                          | 添加Item          |
+| `addItems(List<FlowItem> flowItems)`             | 添加Items     |
+| `addItems(String... titles)`                     | 添加Items     |
 | `addItemAt(int index, FlowItem flowItem)`        | 在指定位置插入Item    |
 | `addItemsAt(int index, String... titles)`        | 在指定位置插入Item    |
 | `addItemsAt(int index, List<FlowItem> items)`    | 在指定位置插入Items   |
@@ -159,6 +160,7 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
 | 属性          | 说明                                                  |
 | ------------- | ----------------------------------------------------- |
 | title         | 标题                                                  |
+| enable        | 是否可选中，默认为true                                |
 | select        | 是否选中，默认false                                   |
 | position      | 在FlowLayout里的位置，该属性不可写，只有get属性       |
 | drawable      | background                                            |
@@ -174,20 +176,20 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
 #### 单个添加
 
 ```java
-    flowSingle.addItem("谁说爱上一个不回家的人");
-    flowSingle.addItem("唯一结局就是无止境的等");
-    flowSingle.addItem("Oh ...");
-    flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
-    flowSingle.addItems("我不要", "牺牲");
+flowSingle.addItem("谁说爱上一个不回家的人");
+flowSingle.addItem("唯一结局就是无止境的等");
+flowSingle.addItem("Oh ...");
+flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
+flowSingle.addItems("我不要", "牺牲");
 ```
 
 或者通过FlowItem添加
 
 ```java
 flowSingle.addItem(new FlowItem().setTitle("不可能")
-        .setDrawable(R.drawable.flow_item_selector) 			//可选
-        .setSelect(true)										//可选
-        .setPadding(dp2px(20), dp2px(8), dp2px(20), dp2px(8)));	//可选
+        .setDrawable(R.drawable.flow_item_selector)//可选
+        .setSelect(true)//可选
+        .setPadding(dp2px(20), dp2px(8), dp2px(20), dp2px(8)));//可选
 ```
 
 
@@ -225,12 +227,12 @@ flowMulti.addItems(flowItems);
 flowSingle.setItemStateListener(new FlowListener() {
     @Override
     public void onItemSelected(FlowItem flowItem) {
-        Log.i(TAG, String.format("onItem(%d) selected:%s", flowItem.getPosition(), 	   			flowItem.getTitle()));
+        Log.i(TAG, String.format("onItem(%d) selected:%s", flowItem.getPosition(), flowItem.getTitle()));
     }
 
     @Override
     public void onItemUnSelected(FlowItem flowItem) {
-        Log.i(TAG, String.format("onItem(%d) unSelected:%s", flowItem.getPosition(), 			flowItem.getTitle()));
+        Log.i(TAG, String.format("onItem(%d) unSelected:%s", flowItem.getPosition(), flowItem.getTitle()));
     }
 });
 ```
@@ -258,3 +260,4 @@ app:defDrawable="@drawable/flow_item_selector"
 如果在子Item中设置了Drawable，则使用设置的;**其他属性也是同理，优先子Item的设置**
 
 如果觉得好用就点个Star吧，感谢~
+

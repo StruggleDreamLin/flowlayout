@@ -8,7 +8,7 @@ import androidx.annotation.DrawableRes;
 public class FlowItem {
 
     private String title = "";
-
+    private boolean enable = true;
     private boolean select = false;
 
     //在FlowLayout里的位置
@@ -33,6 +33,15 @@ public class FlowItem {
 
     public FlowItem setTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public FlowItem setEnable(boolean enable) {
+        this.enable = enable;
         return this;
     }
 
