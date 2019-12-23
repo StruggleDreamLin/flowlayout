@@ -10,7 +10,7 @@ a flexible android flowlayout
 ## 引用
 
 ```java
-implementation 'com.dreamlin.flowlayout:flowlayout:1.0.1'
+implementation 'com.dreamlin.flowlayout:flowlayout:1.0.2'
 ```
 
 
