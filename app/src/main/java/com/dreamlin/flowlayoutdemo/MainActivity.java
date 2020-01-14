@@ -10,6 +10,7 @@ import android.util.TypedValue;
 
 import com.dreamlin.flowlayout.FlowItem;
 import com.dreamlin.flowlayout.FlowLayout;
+import com.dreamlin.flowlayout.FlowLayoutLearning;
 import com.dreamlin.flowlayout.FlowListener;
 
 import java.util.ArrayList;

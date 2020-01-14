@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="FlowLayout">
-        <attr name="fontSize" format="dimension" />
-        <attr name="fontColor" format="color" />
-        <attr name="multiSelected" format="boolean" />
-        <attr name="enableSelected" format="boolean" />
-        <attr name="lineSpacing" format="dimension" />
-        <attr name="columnSpacing" format="dimension" />
-        <attr name="defDrawable" format="reference" />
-        <attr name="childPaddingLeft" format="dimension" />
-        <attr name="childPaddingTop" format="dimension" />
-        <attr name="childPaddingRight" format="dimension" />
-        <attr name="childPaddingBottom" format="dimension" />
+    <attr name="fontSize" format="dimension" />
+    <attr name="fontColor" format="color" />
+    <attr name="multiSelected" format="boolean" />
+    <attr name="enableSelected" format="boolean" />
+    <attr name="lineSpacing" format="dimension" />
+    <attr name="columnSpacing" format="dimension" />
+    <attr name="defDrawable" format="reference" />
+    <attr name="childPaddingLeft" format="dimension" />
+    <attr name="childPaddingTop" format="dimension" />
+    <attr name="childPaddingRight" format="dimension" />
+    <attr name="childPaddingBottom" format="dimension" />
+
+    <declare-styleable name="FlowLayoutLearning">
+        <attr name="fontSize" />
+        <attr name="fontColor" />
+        <attr name="multiSelected" />
+        <attr name="enableSelected" />
+        <attr name="lineSpacing" />
+        <attr name="columnSpacing" />
+        <attr name="defDrawable" />
+        <attr name="childPaddingLeft" />
+        <attr name="childPaddingTop" />
+        <attr name="childPaddingRight" />
+        <attr name="childPaddingBottom" />
     </declare-styleable>
 
+    <declare-styleable name="FlowLayout">
+        <attr name="fontSize" />
+        <attr name="fontColor" />
+        <attr name="multiSelected" />
+        <attr name="enableSelected" />
+        <attr name="lineSpacing" />
+        <attr name="columnSpacing" />
+        <attr name="defDrawable" />
+        <attr name="childPaddingLeft" />
+        <attr name="childPaddingTop" />
+        <attr name="childPaddingRight" />
+        <attr name="childPaddingBottom" />
+    </declare-styleable>
 </resources>

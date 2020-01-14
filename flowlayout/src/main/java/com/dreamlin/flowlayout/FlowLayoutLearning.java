@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -20,7 +19,11 @@ import androidx.annotation.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowLayout extends ViewGroup implements View.OnClickListener {
+/**
+ * 这份代码测量过程完全手写，没有借助ViewGroup提供的子View测量方法，可以更好的
+ * 帮助自定义ViewGroup 的初学者理解测量及布局机制
+ */
+public class FlowLayoutLearning extends ViewGroup implements View.OnClickListener {
 
     private boolean enableSelected = true;
     private boolean multiSelected = false;
@@ -28,7 +31,6 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
     private int currentSelectedIndex = -1;
 
     private List<FlowItem> flowItems = new ArrayList<>();
-    private List<Rect> childRects = new ArrayList<>();
     private int mColumnSpacing = dp2px(10);
     private int mLineSpacing = dp2px(10);
     private int mChildPaddingLeft = dp2px(10);
@@ -43,15 +45,15 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
     int mDefDrawable;
     private FlowListener mListener;
 
-    public FlowLayout(Context context) {
+    public FlowLayoutLearning(Context context) {
         this(context, null);
     }
 
-    public FlowLayout(Context context, AttributeSet attrs) {
+    public FlowLayoutLearning(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FlowLayoutLearning(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initResources(context, attrs);
     }
@@ -84,77 +86,162 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
         int childCount = getChildCount();
         int selfWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         int selfWidthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int selfHeightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int selfHeightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int paddingLeft = getPaddingLeft();
         int paddingRight = getPaddingRight();
         int paddingTop = getPaddingTop();
         int paddingBottom = getPaddingBottom();
 
-        /*
+        /**
          * 遍历确定所有子View的MeasureSpec
          */
-        int widthUsed = paddingLeft + paddingRight;
-        int heightUsed = paddingTop + paddingBottom;
+        int measureWidth = paddingLeft + paddingRight;
+        int measureHeight = paddingTop + paddingBottom;
 
         //记录上一行子View的最大高度
-        int lineMaxHeight = 0;
-        int lineMaxWidth = 0;
+        int lastRowHeight = 0;
+        int row = 0; //行
+        int column = 0;
         for (int i = 0; i < childCount; i++) {
             View childAt = getChildAt(i);
-            //这里需要注意，widthUsed的限制，只需要在padding之内即可
-            measureChildWithMargins(childAt, widthMeasureSpec, paddingLeft + paddingRight,
-                    heightMeasureSpec, heightUsed);
-            int childLeft, childTop, childRight, childBottom;
-            if (selfWidthMode != MeasureSpec.UNSPECIFIED &&
-                    widthUsed + childAt.getMeasuredWidth() > selfWidthSize) {
-                heightUsed += lineMaxHeight + mLineSpacing;
-                widthUsed = paddingLeft + paddingRight;
-                lineMaxHeight = 0;
-                childLeft = paddingLeft;
-                measureChildWithMargins(childAt, widthMeasureSpec, paddingLeft + paddingRight,
-                        heightMeasureSpec, heightUsed);
-            } else {
-                childLeft = widthUsed - paddingRight;
+            LayoutParams layoutParams = childAt.getLayoutParams();
+            int childWidthMeasureSpec;
+            int childHeightMeasureSpec;
+            //这里所有的测量判断均未考虑到子View自身的margin 和 padding
+            switch (layoutParams.width) {
+
+                case LayoutParams.MATCH_PARENT:
+                    //当子View layout是match_parent时, viewgroup的限制是固定大小或者上限
+                    //则子View铺满的其实就是viewgroup的固定大小或上限
+                    if (selfWidthMode == MeasureSpec.EXACTLY ||
+                            selfWidthMode == MeasureSpec.AT_MOST) {
+                        int availableWidth = selfWidthSize - paddingLeft - paddingRight;
+                        childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY);
+                    } else /*if (selfWidthMode == MeasureSpec.UNSPECIFIED)*/ {
+                        childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                    }
+                    break;
+                case LayoutParams.WRAP_CONTENT:
+                    //而当子View为WRAP_CONTENT时，其实隐含的条件就是不超过父View的大小 即AT_MOST
+                    if (selfWidthMode == MeasureSpec.EXACTLY ||
+                            selfWidthMode == MeasureSpec.AT_MOST) {
+                        int availableWidth = selfWidthSize - paddingLeft - paddingRight;
+                        childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
+                    } else /*if (selfWidthMode == MeasureSpec.UNSPECIFIED)*/ {
+                        childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                    }
+                    break;
+                default:
+                    childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.width, MeasureSpec.EXACTLY);
+                    break;
             }
-            childTop = heightUsed - paddingTop;
-            childRight = childLeft + childAt.getMeasuredWidth();
-            childBottom = childTop + childAt.getMeasuredHeight();
-            Rect childRect;
-            if (childRects.size() <= i) {
-                childRect = new Rect();
-                childRects.add(childRect);
-            } else {
-                childRect = childRects.get(i);
+
+            switch (layoutParams.height) {
+
+                case LayoutParams.MATCH_PARENT:
+                    //当子View layout是match_parent时, viewgroup的限制是固定大小或者上限
+                    //则子View铺满的其实就是viewgroup的固定大小或上限
+                    if (selfHeightMode == MeasureSpec.EXACTLY ||
+                            selfHeightMode == MeasureSpec.AT_MOST) {
+                        int availableHeight = selfHeightSize - paddingTop - paddingBottom;
+                        childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY);
+                    } else/* if (selfHeightMode == MeasureSpec.UNSPECIFIED) */ {
+                        childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                    }
+                    break;
+                case LayoutParams.WRAP_CONTENT:
+                    //而当子View为WRAP_CONTENT时，其实隐含的条件就是不超过父View的大小 即AT_MOST
+                    if (selfHeightMode == MeasureSpec.EXACTLY ||
+                            selfHeightMode == MeasureSpec.AT_MOST) {
+                        int availableHeight = selfHeightSize - paddingTop - paddingBottom;
+                        childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.AT_MOST);
+                    } else /*if (selfHeightMode == MeasureSpec.UNSPECIFIED) */ {
+                        childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                    }
+                    break;
+                default:
+                    childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(layoutParams.height, MeasureSpec.EXACTLY);
+                    break;
             }
-            childRect.set(childLeft, childTop, childRight, childBottom);
-            //最后加上列间距
-            widthUsed += mColumnSpacing + childAt.getMeasuredWidth();
-            if (widthUsed > lineMaxWidth) {
-                lineMaxWidth = widthUsed;
-            }
-            //更新行高
-            if (childAt.getMeasuredHeight() > lineMaxHeight) {
-                lineMaxHeight = childAt.getMeasuredHeight();
+
+            childAt.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+            int childAtMeasuredHeight = childAt.getMeasuredHeight();
+            int childAtMeasuredWidth = childAt.getMeasuredWidth();
+
+            //需要换行
+            if (selfWidthMode != MeasureSpec.UNSPECIFIED) {
+                if (measureWidth + mColumnSpacing + childAtMeasuredWidth > selfWidthSize) {
+                    measureWidth = paddingLeft + paddingRight;
+                    measureHeight += lastRowHeight + mLineSpacing;
+                    lastRowHeight = childAtMeasuredHeight;
+                    column = 0;
+                    row++;
+                }
+                if (column == 0)
+                    measureWidth += childAtMeasuredWidth;
+                else if (column > 0)
+                    measureWidth += mColumnSpacing + childAtMeasuredWidth;
+                column++;
+                if (childAtMeasuredHeight > lastRowHeight) {
+                    lastRowHeight = childAtMeasuredHeight;
+                }
+            } else {//这个什么条件下触发，包在HorizontalScrollView里可以，横向无限制
+                if (i == 0)
+                    measureWidth += childAtMeasuredWidth;
+                else
+                    measureWidth += mColumnSpacing + childAtMeasuredWidth;
+                if (childAtMeasuredHeight > lastRowHeight)
+                    lastRowHeight = childAtMeasuredHeight;
             }
         }
-        //加上最后一行的高度
-        heightUsed += lineMaxHeight;
-        setMeasuredDimension(lineMaxWidth, heightUsed);
+        //最后加上当前行高度
+        measureHeight += lastRowHeight;
+
+        //如果限制是固定值,遵从开发者的限定
+        if (selfWidthMode == MeasureSpec.EXACTLY) {
+            measureWidth = selfWidthSize;
+        }
+        //如果限制是上限
+        if (selfWidthMode == MeasureSpec.AT_MOST) {
+            //如果存在多行，说明超出了宽度限制，取宽度限制
+            if (row > 0)
+                measureWidth = selfWidthSize;
+        }
+
+        //其实宽度自己都限制好了
+        int resolveWidthSize = resolveSize(measureWidth, widthMeasureSpec);
+        int resolveHeightSize = resolveSize(measureHeight, heightMeasureSpec);
+        setMeasuredDimension(resolveWidthSize, resolveHeightSize);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int curLeft = getPaddingLeft();
+        int curTop = getPaddingTop();
+
+        int lastRowHeight = 0;
         int childCount = getChildCount();
+        int measuredWidth = getMeasuredWidth();
         for (int i = 0; i < childCount; i++) {
             View childAt = getChildAt(i);
-            childAt.layout(childRects.get(i).left, childRects.get(i).top,
-                    childRects.get(i).right, childRects.get(i).bottom);
-        }
-    }
+            int childAtMeasuredWidth = childAt.getMeasuredWidth();
+            int childAtMeasuredHeight = childAt.getMeasuredHeight();
 
-    @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new MarginLayoutParams(getContext(), attrs);
+            //需要换行
+            if (curLeft + childAtMeasuredWidth > measuredWidth - getPaddingRight()) {
+                curLeft = getPaddingLeft();
+                curTop += mLineSpacing + lastRowHeight;
+                lastRowHeight = childAtMeasuredHeight;
+            }
+            childAt.layout(curLeft, curTop, curLeft + childAtMeasuredWidth, curTop + childAtMeasuredHeight);
+            curLeft += mColumnSpacing + childAtMeasuredWidth;
+
+            if (childAtMeasuredHeight > lastRowHeight) {
+                lastRowHeight = childAtMeasuredHeight;
+            }
+        }
     }
 
     /**
@@ -250,7 +337,7 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
 
         }
         TextView textView = new TextView(getContext());
-        LayoutParams layoutParams = new MarginLayoutParams(flowItem.getWidth(), flowItem.getHeight());
+        LayoutParams layoutParams = new LayoutParams(flowItem.getWidth(), flowItem.getHeight());
         textView.setLayoutParams(layoutParams);
         if (flowItem.getDrawable() != R.drawable.item_selector) {
             textView.setBackgroundResource(flowItem.getDrawable());
