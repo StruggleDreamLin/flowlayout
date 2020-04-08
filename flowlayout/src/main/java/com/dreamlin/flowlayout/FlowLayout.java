@@ -116,7 +116,8 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
             } else {
                 childLeft = widthUsed - paddingRight;
             }
-            childTop = heightUsed - paddingTop;
+            //fix paddingBottom error
+            childTop = heightUsed - paddingBottom;
             childRight = childLeft + childAt.getMeasuredWidth();
             childBottom = childTop + childAt.getMeasuredHeight();
             Rect childRect;
@@ -404,6 +405,14 @@ public class FlowLayout extends ViewGroup implements View.OnClickListener {
             throw new IndexOutOfBoundsException(String.format("非法的移除位置{%d}", index));
         flowItems.remove(index);
         super.removeViewAt(index);
+    }
+
+    /**
+     * 移除所有Child
+     */
+    public void clear() {
+        removeAllViews();
+        flowItems.clear();
     }
 
     @Override

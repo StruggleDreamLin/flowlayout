@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -39,9 +39,9 @@ ext {
     // jcenter
     bintrayRepo = "flowlayout"                                             // 你上传的位于bintray中的Repository名称，如果没有创建会有一个叫maven的
     name = 'flowlayout'                                                // 必须和library module的名字相同
-    libraryDesc = 'A Android FlowLayout'
+    libraryDesc = 'An Android FlowLayout'
     publishedGroupId = 'com.dreamlin.flowlayout'                // 填写groupId， 一般是包名，比如：com.android.support
-    versionName = '1.0.3'                                               // 版本号，比如：22.2.1
+    versionName = '1.0.4'                                               // 版本号，比如：22.2.1
     websiteUrl = 'https://github.com/StruggleDreamLin/flowlayout'              // 可以填写github上的库地址.
     issueTrackerUrl = 'https://github.com/StruggleDreamLin/flowlayout/issues'  // 可以填写github库的issue地址.
     vcsUrl = 'https://github.com/StruggleDreamLin/flowlayout.git'              // 可以填写github上库的地址.

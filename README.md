@@ -10,7 +10,7 @@ a flexible android flowlayout
 ## 引用
 
 ```java
-implementation 'com.dreamlin.flowlayout:flowlayout:1.0.3'
+implementation 'com.dreamlin.flowlayout:flowlayout:1.0.4'
 ```
 
 
@@ -64,7 +64,7 @@ implementation 'com.dreamlin.flowlayout:flowlayout:1.0.3'
 | `removeItem(String title)`                       | 根据标题移除Item      |
 | `removeItem(FlowItem flowItem)`                  | 移除指定Item          |
 | `removeItemAt(int index)`                        | 移除指定位置的Item    |
-
+| `clear()`                                        | 移除所有Item         |
 
 ## 使用
 
