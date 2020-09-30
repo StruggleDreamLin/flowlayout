@@ -49,16 +49,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        List<FlowItem> singItems = new ArrayList<>();
+        singItems.add(new FlowItem().setTitle("不可能").setEnable(false));
         flowSingle = findViewById(R.id.flow_single);
-        flowSingle.addItem("谁说爱上一个不回家的人");
+        /*flowSingle.addItem("谁说爱上一个不回家的人");
         flowSingle.addItem("唯一结局就是无止境的等");
         flowSingle.addItem("Oh ...");
         flowSingle.addItems(new String[]{"难道真没有别的可能", "这怎么成"});
-        flowSingle.addItem(new FlowItem().setTitle("不可能").setEnable(false).setFontColor(0xFF969696));
+        flowSingle.addItem(new FlowItem().setTitle("不可能").setFontColor(0xFF969696).setEnable(false));
         flowSingle.addItem("我不要");
         flowSingle.addItem("安稳");
         flowSingle.addItems("我不要", "牺牲");
-        flowSingle.updateItem(new FlowItem().setTitle("唯一结局就是无止境的等").setEnable(false).setFontColor(0xFF969696));
+        flowSingle.updateItem(new FlowItem().setTitle("唯一结局就是无止境的等").setEnable(false).setFontColor(0xFF969696));*/
+        flowSingle.addItems(singItems);
 
         flowSingle.setItemStateListener(new FlowListener() {
             @Override

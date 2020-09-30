@@ -3,9 +3,7 @@ a flexible android flowlayout
 
 ## 效果
 
-<img src="./images/flow-layout.jpg" style="zoom:80%;" />
-
-
+![](https://upload-images.jianshu.io/upload_images/6850504-965057ecd4505b4b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## 引用
 
@@ -13,7 +11,9 @@ a flexible android flowlayout
 implementation 'com.dreamlin.flowlayout:flowlayout:1.0.4'
 ```
 
+## 注意事项
 
+   `FlowLayout在约束布局中失效（ConstraintLayout）`
 
 ## 属性
 
@@ -243,11 +243,11 @@ flowSingle.setItemStateListener(new FlowListener() {
 
 可参考Demo的实现
 
-![](./images/flow-item_selector.jpg)
+![](https://upload-images.jianshu.io/upload_images/6850504-13ddc7a9812866a3.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 注意要在selector中标注好状态:
 
-![](./images/selector_state.jpg)
+![](https://upload-images.jianshu.io/upload_images/6850504-66e6383a6cb9c0de.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 在FlowLayout中设置默认的Item drawable
 

@@ -97,8 +97,8 @@ public class FlowLayoutLearning extends ViewGroup implements View.OnClickListene
         /**
          * 遍历确定所有子View的MeasureSpec
          */
-        int measureWidth = paddingLeft + paddingRight;
-        int measureHeight = paddingTop + paddingBottom;
+        int usedWidth = paddingLeft + paddingRight;
+        int usedHeight = paddingTop + paddingBottom;
 
         //记录上一行子View的最大高度
         int lastRowHeight = 0;
@@ -172,47 +172,48 @@ public class FlowLayoutLearning extends ViewGroup implements View.OnClickListene
 
             //需要换行
             if (selfWidthMode != MeasureSpec.UNSPECIFIED) {
-                if (measureWidth + mColumnSpacing + childAtMeasuredWidth > selfWidthSize) {
-                    measureWidth = paddingLeft + paddingRight;
-                    measureHeight += lastRowHeight + mLineSpacing;
+                if (usedWidth + mColumnSpacing + childAtMeasuredWidth > selfWidthSize) {
+                    usedWidth = paddingLeft + paddingRight;
+                    usedHeight += lastRowHeight + mLineSpacing;
                     lastRowHeight = childAtMeasuredHeight;
                     column = 0;
                     row++;
                 }
                 if (column == 0)
-                    measureWidth += childAtMeasuredWidth;
+                    usedWidth += childAtMeasuredWidth;
                 else if (column > 0)
-                    measureWidth += mColumnSpacing + childAtMeasuredWidth;
+                    usedWidth += mColumnSpacing + childAtMeasuredWidth;
                 column++;
+
                 if (childAtMeasuredHeight > lastRowHeight) {
                     lastRowHeight = childAtMeasuredHeight;
                 }
             } else {//这个什么条件下触发，包在HorizontalScrollView里可以，横向无限制
                 if (i == 0)
-                    measureWidth += childAtMeasuredWidth;
+                    usedWidth += childAtMeasuredWidth;
                 else
-                    measureWidth += mColumnSpacing + childAtMeasuredWidth;
+                    usedWidth += mColumnSpacing + childAtMeasuredWidth;
                 if (childAtMeasuredHeight > lastRowHeight)
                     lastRowHeight = childAtMeasuredHeight;
             }
         }
         //最后加上当前行高度
-        measureHeight += lastRowHeight;
+        usedHeight += lastRowHeight;
 
         //如果限制是固定值,遵从开发者的限定
         if (selfWidthMode == MeasureSpec.EXACTLY) {
-            measureWidth = selfWidthSize;
+            usedWidth = selfWidthSize;
         }
         //如果限制是上限
         if (selfWidthMode == MeasureSpec.AT_MOST) {
             //如果存在多行，说明超出了宽度限制，取宽度限制
             if (row > 0)
-                measureWidth = selfWidthSize;
+                usedWidth = selfWidthSize;
         }
 
         //其实宽度自己都限制好了
-        int resolveWidthSize = resolveSize(measureWidth, widthMeasureSpec);
-        int resolveHeightSize = resolveSize(measureHeight, heightMeasureSpec);
+        int resolveWidthSize = resolveSize(usedWidth, widthMeasureSpec);
+        int resolveHeightSize = resolveSize(usedHeight, heightMeasureSpec);
         setMeasuredDimension(resolveWidthSize, resolveHeightSize);
     }
 
